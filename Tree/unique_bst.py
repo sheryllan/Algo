@@ -71,3 +71,12 @@ assert solution2.numTrees(10) == 16796
 
 
 
+"""
+Time Complexity: 
+o(1 + 2/2 + 3/2 + ... n/2) = o(1 + 1/2 * (1 + n) * n/2) = o(1 + (n^2 + n)/4) = o(n^2)
+
+Space Complexity: o(n)
+
+"""
+
+
