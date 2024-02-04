@@ -26,37 +26,13 @@ If the biggest number is considered as priority, then it isn't the minimum.
 
 class Solution:
     def coinChange(self, coins: [int], amount: int) -> int:
-        # coins_desc = sorted(coins, reverse=True)
-        #
-        # def change_rcsv(idx: int, rem: int):
-        #     if idx >= len(coins_desc):
-        #         return -1 if rem != 0 else 0
-        #
-        #     coin = coins_desc[idx]
-        #     if rem % coin == 0:
-        #         return rem // coin
-        #     min_count = -1
-        #     for k in range(rem // coin, -1, -1):
-        #         rem_k = rem - coin * k
-        #         with_k_coin = change_rcsv(idx + 1, rem_k)
-        #         if with_k_coin == -1:
-        #             continue
-        #         min_count = (k + with_k_coin) if min_count == -1 else min(k + with_k_coin, min_count)
-        #
-        #     return min_count
-        #
-        # return change_rcsv(0, amount)
-
-        counts = [0] + [-1] * amount
+        counts = [0] + [float('inf')] * amount
         for coin in coins:
             for i in range(coin, amount + 1):
-                if counts[i - coin] == -1:
-                    continue
                 n = counts[i - coin] + 1
-                counts[i] = n if counts[i] == -1 else min(counts[i], n)
+                counts[i] = min(counts[i], n)
 
         return counts[amount]
-
 
 
 

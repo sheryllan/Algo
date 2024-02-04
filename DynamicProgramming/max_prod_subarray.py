@@ -82,8 +82,8 @@ class Solution:
 
         if not nums: return 0
 
-        f = [0] * len(nums) # max prod of subarray joinable with the next
-        g = [0] * len(nums) # min prod of subarray joinable with the next
+        f = [0] * len(nums) # max positive prod of subarray joinable with the next
+        g = [0] * len(nums) # min negative prod of subarray joinable with the next
         res = float('-inf') # historical max prod is saved here
 
         for i in range(len(nums)):
@@ -93,19 +93,42 @@ class Solution:
                 res = max(res, f[i])
                 continue
 
+            # if nums[i] > 0:
+            #     f[i] = max(nums[i] * f[i-1], nums[i]) # nums[i] > 0, then times the largest, or sets to itself
+            # else:
+            #     f[i] = max(nums[i] * g[i-1], nums[i]) # nums[i] <= 0, times the smallest, or sets to itself
+            #
+            # res = max(res, f[i])
+            #
+            # if nums[i] > 0:
+            #     g[i] = min(nums[i] * g[i-1], nums[i]) # opposite to f[i]
+            # else:
+            #     g[i] = min(nums[i] * f[i-1], nums[i])
+
             if nums[i] > 0:
-                f[i] = max(nums[i] * f[i-1], nums[i]) # nums[i] > 0, then times the largest, or sets to itself
+                f[i] = max(nums[i] * f[i-1], nums[i])
+                g[i] = min(nums[i] * g[i - 1], nums[i])
             else:
-                f[i] = max(nums[i] * g[i-1], nums[i]) # nums[i] <= 0, times the smallest, or sets to itself
+                g[i] = min(nums[i] * f[i - 1], nums[i])
+                f[i] = max(nums[i] * g[i - 1], nums[i])
 
             res = max(res, f[i])
 
-            if nums[i] > 0:
-                g[i] = min(nums[i] * g[i-1], nums[i]) # opposite to f[i]
-            else:
-                g[i] = min(nums[i] * f[i-1], nums[i])
-
         return res
+
+
+"""
+public int maxProduct(int[] A) {
+assert A.length > 0;
+int max = A[0], min = A[0], maxAns = A[0]; for (int i = 1; i < A.length; i++) {
+      int mx = max, mn = min;
+      max = Math.max(Math.max(A[i], mx * A[i]), mn * A[i]);
+      min = Math.min(Math.min(A[i], mx * A[i]), mn * A[i]);
+      maxAns = Math.max(max, maxAns);
+}
+   return maxAns;
+}
+"""
 
 
 solution = Solution()

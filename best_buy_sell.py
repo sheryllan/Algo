@@ -86,6 +86,7 @@ class Solution:
 
 
 s = Solution()
+print(s.maxProfit(7, [48,12,60,93,97,42,25,64,17,56,85,93,9,48,52,42,58,85,81,84,69,36,1,54,23,15,72,15,11,94]))
 assert s.maxProfit(4, [1,2,4,2,5,7,2,4,9,0]) == 15
 assert s.maxProfit(2, [1,2,4,2,5,7,2,4,9,0]) == 13
 assert s.maxProfit(3, [1,2,4,2,5,7,2,4,9,0]) == 15
@@ -216,6 +217,7 @@ class Solution2:
 
 s = Solution2()
 # assert s.maxProfit(4, [1,2,4,2,5,7,2,4,9,0]) == 15
+print(s.maxProfit(7, [48,12,60,93,97,42,25,64,17,56,85,93,9,48,52,42,58,85,81,84,69,36,1,54,23,15,72,15,11,94]))
 assert s.maxProfit(2, [1,2,4,2,5,7,2,4,9,0]) == 13
 assert s.maxProfit(3, [1,2,4,2,5,7,2,4,9,0]) == 15
 assert s.maxProfit(2, [5, 4, 3, 1]) == 0
@@ -226,3 +228,90 @@ assert s.maxProfit(2, [5, 4, 3, 1]) == 0
 # print(a)
 assert s.maxProfit(2, [3,2,6,5,0,3]) == 7
 assert s.maxProfit(1, [3,2,6,5,0,3]) == 4
+
+
+# DP solution uising memoization, O(n * n * k)
+def maxProfit(k: int, prices: [int]):
+    if not prices or k == 0:
+            return 0
+
+    profits = {}
+    buy_indices = []
+    i_buy = 0
+
+    def calc(i_sell):
+        new_profits = [] if len(buy_indices) < 2 else profits[buy_indices[-2]].copy()
+        if len(new_profits) < k:
+            new_profits.append(0)
+        new_profits[0] = max(new_profits[0], prices[i_sell] - prices[buy_indices[0]])
+        for j in range(1, len(buy_indices)):
+            profit = prices[i_sell] - prices[buy_indices[j]]
+            prev_profits = profits[buy_indices[j - 1]]
+            new_profits[0] = max(new_profits[0], prev_profits[0])
+            for x in range(1, min(len(new_profits), len(prev_profits) + 1)):
+                new_profits[x] = max(new_profits[x], profit + prev_profits[x - 1])
+        return new_profits
+
+    for i in range(len(prices) - 1):
+        if prices[i] < prices[i_buy]:
+            i_buy = i
+
+        elif prices[i + 1] < prices[i] and prices[i] > prices[i_buy]:
+            buy_indices.append(i_buy)
+            profits[i_buy] = calc(i)
+            i_buy = i
+
+
+    if i_buy not in profits and prices[-1] > prices[i_buy]:
+        buy_indices.append(i_buy)
+        profits[i_buy] = calc(len(prices) - 1)
+
+    # r = profits[buy_indices[-1]][min(k, len(buy_indices)) - 1]
+    return profits[buy_indices[-1]][min(k, len(buy_indices)) - 1] if profits else 0
+
+
+
+# DP solution using recursion, O(n * n * k)
+# def maxProfit(k: int, prices: [int]):
+#     if not prices or k == 0:
+#             return 0
+#
+#     N = len(prices)
+#     profit_records = [0] * N
+#
+#     def calc(d, n_trades):
+#         if n_trades <= 0:
+#             return 0
+#
+#         if profit_records[d]:
+#             return profit_records[d][n_trades - 1]
+#
+#         profit_records[d] = [0] * k
+#         for i in range(N - 1, d, -1): # order matters!! need to update the records from bottom up
+#             for j in range(min(n_trades, (N - i) // 2 + 1) - 1, -1, -1): # the same from large to small
+#                 profit = calc(i, j + 1) if prices[i] <= prices[d] else (prices[i] - prices[d] + calc(i + 1, j))
+#                 profit_records[d][j] = max(profit_records[d][j], profit)
+#
+#         return profit_records[d][n_trades - 1]
+#
+#     calc(0, k)
+#     r = max(profit_records[0])
+#     return r
+
+
+
+assert maxProfit(0, [1, 3]) == 0
+assert maxProfit(2, []) == 0
+assert maxProfit(7, [48,12,60,93,97,42,25,64,17,56,85,93,9,48,52,42,58,85,81,84,69,36,1,54,23,15,72,15,11,94]) == 469
+assert maxProfit(3, [2,6,8,7,8,7,9,4,1,2,4,5,8]) == 15
+assert maxProfit(2, [8,6,4,3,3,2,3,5,8,3,8,2,6]) == 11
+assert maxProfit(3, [5, 2, 4, 3, 1, 10]) == 11
+assert maxProfit(2, [3,2,6,5,0,3]) == 7
+assert maxProfit(1, [3,2,6,5,0,3]) == 4
+assert maxProfit(2, [1,2,4,2,5,7,2,4,9,0]) == 13
+assert maxProfit(3, [1,2,4,2,5,7,2,4,9,0]) == 15
+assert maxProfit(2, [5, 4, 3, 1]) == 0
+
+
+
+

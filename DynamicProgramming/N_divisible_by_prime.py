@@ -14,7 +14,7 @@ def get_primes(N: int):
             is_prime[i] = False
 
 
-
+print(list(get_primes(50)))
 # for x in get_primes(50):
 #     print(x)
 
@@ -54,6 +54,6 @@ def get_count_nums_primes_divisible(N):
 
 
 # print(get_count_nums_primes_divisible(10000))
-print(get_count_nums_primes_divisible(20))
-print(get_count_nums_primes_divisible(1000000))
+# print(get_count_nums_primes_divisible(20))
+# print(get_count_nums_primes_divisible(1000000))
 

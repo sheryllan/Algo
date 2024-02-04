@@ -48,6 +48,27 @@ class Solution:
         return recursive_construct(nums)
 
 
+    # better approach
+    def construct(self, nums: [int]) -> TreeNode:
+        def build(val, max_node: TreeNode):
+            if max_node is None:
+                return TreeNode(val)
+
+            if max_node.val > val:
+                max_node.right = build(val, max_node.right)
+                return max_node
+            else:
+                new_node = TreeNode(val)
+                new_node.left = max_node
+                return new_node
+
+        root = None
+        for n in nums:
+            root = build(n, root)
+
+        return root
+
+
 class Tests(ut.TestCase):
     def print_tree_in_order(self, head: TreeNode):
         if head is not None:
@@ -63,7 +84,8 @@ class Tests(ut.TestCase):
         nums = [3, 2, 1, 6, 0, 5]
         expected = [6, 3, None, 2, None, 1, None, None, 5, 0, None, None, None]
 
-        ret_node = solution.constructMaximumBinaryTree(nums)
+        # ret_node = solution.constructMaximumBinaryTree(nums)
+        ret_node = solution.construct(nums)
         actual = list(self.print_tree_in_order(ret_node))
 
         self.assertListEqual(actual, expected)
@@ -74,7 +96,8 @@ class Tests(ut.TestCase):
         nums = [1, 2, 3, 4, 5, 6, 7]
         expected = [7, 6, 5, 4, 3, 2, 1] + ([None] * 8)
 
-        ret_node = solution.constructMaximumBinaryTree(nums)
+        # ret_node = solution.constructMaximumBinaryTree(nums)
+        ret_node = solution.construct(nums)
         actual = list(self.print_tree_in_order(ret_node))
 
         self.assertListEqual(actual, expected)
@@ -85,7 +108,8 @@ class Tests(ut.TestCase):
         nums = []
         expected = [None]
 
-        ret_node = solution.constructMaximumBinaryTree(nums)
+        # ret_node = solution.constructMaximumBinaryTree(nums)
+        ret_node = solution.construct(nums)
         actual = list(self.print_tree_in_order(ret_node))
         self.assertListEqual(actual, expected)
 
