@@ -44,11 +44,7 @@ class LRUCache:
         self._tail = None
 
 
-    def update_linkedlist(self, key: int, value=None):
-        node = self._cache.get(key, Node(key, value))
-        if value is not None:
-            node.value = value
-
+    def update_linkedlist(self, node: Node):
         if self._head is None and self._tail is None:
             self._head = node
             self._tail = node
@@ -71,24 +67,29 @@ class LRUCache:
         node.next = None
         self._tail = node
 
+    def remove_head(self):
+        if self._head is not None:
+            self._cache.pop(self._head.key)
+            self._head = self._head.next
 
     def get(self, key: int) -> int:
         if key in self._cache:
-            self.update_linkedlist(key)
+            self.update_linkedlist(self._cache[key])
             return self._cache[key].value
         return -1
 
-
     def put(self, key: int, value: int) -> None:
-        self.update_linkedlist(key, value)
+        if key in self._cache:
+            node = self._cache[key]
+            node.value = value
+        else:
+            node = Node(key, value)
 
-        if key not in self._cache:
-            if len(self._cache) >= self.capacity:
-                head = self._head
-                self._cache.pop(head.key)
-                self._head = head.next
+        self._cache[key] = node
+        self.update_linkedlist(node)
 
-            self._cache[key] = self._tail
+        if len(self._cache) > self.capacity:
+            self.remove_head()
 
 
 
@@ -105,6 +106,7 @@ assert cache.get(1) == 1
 cache.put(3, 3)
 assert cache.get(2) == -1
 cache.put(4, 4)
+assert cache.get(2) == -1
 assert cache.get(1) == -1
 assert cache.get(3) == 3
 assert cache.get(4) == 4

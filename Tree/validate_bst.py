@@ -56,7 +56,7 @@ class Solution:
         return result is not False
 
 
-# Top-down
+# Top-down, Preorder traversal
 class Solution2:
     def isValidBST(self, root):
         """
@@ -101,3 +101,39 @@ class Solution3:
             stack.append((root.right, val, upper))
             stack.append((root.left, lower, val))
         return True
+
+
+from math import inf
+from typing import Optional, Tuple
+
+
+#链接：https://leetcode.cn/problems/validate-binary-search-tree/solutions/2020306/qian-xu-zhong-xu-hou-xu-san-chong-fang-f-yxvh/
+# Inorder traversal
+class Solution:
+    pre = -inf
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        if root is None:
+            return True
+        if not self.isValidBST(root.left) or root.val <= self.pre:
+            return False
+        self.pre = root.val
+        return self.isValidBST(root.right)
+
+
+# Postorder traversal
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def dfs(node: Optional[TreeNode]) -> Tuple:
+            if node is None:
+                return inf, -inf
+            l_min, l_max = dfs(node.left)
+            r_min, r_max = dfs(node.right)
+            x = node.val
+            # 也可以在递归完左子树之后立刻判断，如果发现不是二叉搜索树，就不用递归右子树了
+            if x <= l_max or x >= r_min:
+                return -inf, inf
+            return min(l_min, x), max(r_max, x)
+        return dfs(root)[1] != inf
+
+
+

@@ -17,6 +17,12 @@ Note:
 
 Only constant extra memory is allowed.
 You may not alter the values in the list's nodes, only nodes itself may be changed.
+
+Constraints:
+
+The number of nodes in the list is n.
+1 <= k <= n <= 5000
+0 <= Node.val <= 1000
 """
 
 
@@ -25,9 +31,9 @@ import unittest as ut
 
 # Definition for singly-linked list.
 class ListNode:
-    def __init__(self, x):
+    def __init__(self, x=None, nxt=None):
         self.val = x
-        self.next = None
+        self.next = nxt
 
 
 class Solution:
@@ -64,6 +70,30 @@ class Solution:
 
         return new_head.next
 
+    def reverse_nodes(self, head: ListNode, k: int):
+        node = head
+        length = 0
+        while node:
+            node = node.next
+            length += 1
+
+        curr = head
+        dummy = ListNode(nxt=head)
+        prev = dummy
+        last = prev
+        for _ in range(length // k):
+            first = curr
+            for _ in range(k):
+                nxt = curr.next
+                curr.next = prev
+                prev = curr
+                curr = nxt
+
+            last.next = prev
+            last = first
+
+        last.next = curr
+        return dummy.next
 
 class Tests(ut.TestCase):
     def create_linked_list(self, values):
@@ -85,11 +115,12 @@ class Tests(ut.TestCase):
     def test_empty_list(self):
         solution = Solution()
         head = self.create_linked_list([])
-        k = 0
+        k = 1
 
         expected = []
         actual = list(self.list_node_values(solution.reverseKGroup(head, k)))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([]), k))))
 
 
     def test_with_one_node(self):
@@ -100,6 +131,7 @@ class Tests(ut.TestCase):
         expected = [1]
         actual = list(self.list_node_values(solution.reverseKGroup(head, k)))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([1]), k))))
 
 
     def test_with_k_lt_list_length(self):
@@ -111,6 +143,7 @@ class Tests(ut.TestCase):
         actual_head = solution.reverseKGroup(head, k)
         actual = list(self.list_node_values(actual_head))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([1, 2, 3, 4, 5]), k))))
 
         head = self.create_linked_list([1, 2, 3, 4, 5, 6, 7, 8])
         k = 3
@@ -118,6 +151,7 @@ class Tests(ut.TestCase):
         actual_head = solution.reverseKGroup(head, k)
         actual = list(self.list_node_values(actual_head))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([1, 2, 3, 4, 5, 6, 7, 8]), k))))
 
 
     def test_with_k_eq_list_length(self):
@@ -129,6 +163,7 @@ class Tests(ut.TestCase):
         actual_head = solution.reverseKGroup(head, k)
         actual = list(self.list_node_values(actual_head))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([1, 2, 3, 4, 5]), k))))
 
 
     def test_with_k_gt_list_length(self):
@@ -140,3 +175,38 @@ class Tests(ut.TestCase):
         actual_head = solution.reverseKGroup(head, k)
         actual = list(self.list_node_values(actual_head))
         self.assertListEqual(actual, expected)
+        print(list(self.list_node_values(solution.reverse_nodes(self.create_linked_list([1, 2, 3, 4, 5]), k))))
+
+
+
+
+from typing import Optional
+
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        # 统计节点个数
+        n = 0
+        cur = head
+        while cur:
+            n += 1
+            cur = cur.next
+
+        p0 = dummy = ListNode(nxt=head)
+        pre = None
+        cur = head
+
+        # k 个一组处理
+        while n >= k:
+            n -= k
+            for _ in range(k):  # 同 92 题
+                nxt = cur.next
+                cur.next = pre  # 每次循环只修改一个 next，方便大家理解
+                pre = cur
+                cur = nxt
+
+            # 见视频
+            nxt = p0.next
+            nxt.next = cur
+            p0.next = pre
+            p0 = nxt
+        return dummy.next
