@@ -115,27 +115,57 @@ class Solution4:
         if n == 0:
             return 0
 
+        dp1 = [0] * (2 * self.MAX_SUM + 1)
+        dp1[self.MAX_SUM] = 1
+        for num in nums:
+            dp2 = [0] * (2 * self.MAX_SUM + 1)
+            for i in range(num, len(dp1) - num):
+                cnt = dp1[i]
+                dp2[i + num] += cnt
+                dp2[i - num] += cnt
+            dp1 = dp2
 
-        sum_counts = [0] * (2 * self.MAX_SUM + 1)
-        sum_counts[nums[0] + self.MAX_SUM] += 1
-        sum_counts[self.MAX_SUM - nums[0]] += 1
+        return dp1[S + self.MAX_SUM] if abs(S) <= self.MAX_SUM else 0
 
-        for num in nums[1:]:
-            next_counts = [0] * (2 * self.MAX_SUM + 1)
-            for i, cnt in enumerate(sum_counts):
-                if not cnt:
-                    continue
+# solution4 = Solution4()
+# assert solution4.findTargetSumWays([1, 1, 1, 1, 1], 3) == 5
+# assert solution4.findTargetSumWays([1, 3, 4, 5], 0) == 0
+# assert solution4.findTargetSumWays([3, 1, 4, 5], 0) == 0
+# assert solution4.findTargetSumWays([0, 1], 1) == 2
+# print(solution4.findTargetSumWays([0, 38, 42, 31, 13, 10, 11, 12, 44, 16, 38, 17, 22, 28, 9, 27, 20, 35, 34, 39], 2))
 
-                next_counts[i + num] += cnt
-                next_counts[i - num] += cnt
 
-            sum_counts = next_counts
+def findTargetSumWays(nums: [int], S: int) -> int:
+    num_sum = sum(nums)
+    target = num_sum + S
 
-        return sum_counts[S + 1000] if abs(S) <= self.MAX_SUM else 0
+    if target < 0 or target % 2 != 0:
+        return 0
+    target = target // 2
 
-solution4 = Solution4()
-assert solution4.findTargetSumWays([1, 1, 1, 1, 1], 3) == 5
-assert solution4.findTargetSumWays([1, 3, 4, 5], 0) == 0
-assert solution4.findTargetSumWays([0, 1], 1) == 2
-print(solution4.findTargetSumWays([0, 38, 42, 31, 13, 10, 11, 12, 44, 16, 38, 17, 22, 28, 9, 27, 20, 35, 34, 39], 2))
+    # dp = [[0] * (target + 1) for _ in range(2)]
+    # dp[0][0] = 1
+    #
+    # for i, x in enumerate(nums):
+    #     for j in range(target + 1):
+    #         if j < x:
+    #             dp[(i + 1) % 2][j] = dp[i % 2][j]
+    #         else:
+    #             dp[(i + 1) % 2][j] = dp[i % 2][j] + dp[i % 2][j - x]
+    #
+    # return dp[len(nums) % 2][target]
 
+    dp = [0] * (target + 1)
+    dp[0] = 1
+    for num in nums:
+        for i in range(target, num - 1, -1):
+            dp[i] += dp[i - num]
+
+    return dp[target]
+
+
+assert findTargetSumWays([1, 1, 1, 1, 1], 3) == 5
+assert findTargetSumWays([1, 3, 4, 5], 0) == 0
+assert findTargetSumWays([3, 1, 4, 5], 0) == 0
+assert findTargetSumWays([0, 1], 1) == 2
+print(findTargetSumWays([0, 38, 42, 31, 13, 10, 11, 12, 44, 16, 38, 17, 22, 28, 9, 27, 20, 35, 34, 39], 2))

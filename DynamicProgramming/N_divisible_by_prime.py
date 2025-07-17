@@ -1,17 +1,32 @@
+from math import sqrt
+
+# def get_primes(N: int):
+#     if N > 1:
+#         yield 2
+#
+#     is_prime = [True] * (N + 1)
+#     for x in range(3, N + 1, 2):
+#         if not is_prime[x]:
+#             continue
+#
+#         yield x
+#         start = x * (x if x % 2 != 0 else (x + 1))
+#         for i in range(start, N + 1, 2 * x):
+#             is_prime[i] = False
+
 # Sieve of Eratosthenes
 def get_primes(N: int):
-    if N > 1:
-        yield 2
-
     is_prime = [True] * (N + 1)
-    for x in range(3, N + 1, 2):
+    for x in range(2, int(sqrt(N)) + 1):
         if not is_prime[x]:
             continue
 
-        yield x
-        start = x * (x if x % 2 != 0 else (x + 1))
-        for i in range(start, N + 1, 2 * x):
+        for i in range(x**2, N + 1, x):
             is_prime[i] = False
+
+    for x in range(2, N + 1):
+        if is_prime[x]:
+            yield x
 
 
 print(list(get_primes(50)))

@@ -64,19 +64,17 @@ def get_visible_profile_count(connection_nodes, connection_from, connection_to, 
         from_node.edges.add(i_to)
         to_node.edges.add(i_from)
 
-    # traverse the graph
-    def traverse(node: User, visited, connections: set):
+    def traverse(node: User, visited):
         visited[node.n - 1] = True
-        connections.add(node.n)
+        yield node.n
         for e in node.edges:
             if not visited[e - 1]:
-                traverse(node_pool[e - 1], visited, connections)
+                yield from traverse(node_pool[e - 1], visited)
 
     visible_profiles = {}
     for node in node_pool:
         if not visited[node.n - 1]:
-            connections = set()
-            traverse(node, visited, connections)
+            connections = set(traverse(node, visited))
             for c in connections:
                 visible_profiles[c] = len(connections)
 
@@ -90,5 +88,7 @@ connection_to = [2,3,4,6,1,7]
 queries = [1,3,5,7]
 
 result = get_visible_profile_count(connection_nodes, connection_from, connection_to, queries)
-print(result)
+assert result == [4, 4, 3, 3]
+
+
 

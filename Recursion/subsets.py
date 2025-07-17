@@ -38,4 +38,8 @@ def find_subsets2(nums: list):
     dfs(0)
     return ans
 
+print(find_subsets([1, 2, 4]))
+print(find_subsets2([1, 2, 4]))
+print(find_subsets([1, 2, 3, 5, 6]))
+print(find_subsets2([1, 2, 3, 5, 6]))
 
