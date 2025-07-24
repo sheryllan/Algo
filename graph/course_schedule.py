@@ -66,6 +66,49 @@ class Solution:
 
         return True
 
+"""
+具体思路
+
+对于每个节点 x，都定义三种颜色值（状态值）：
+
+0：节点 x 尚未被访问到。
+1：节点 x 正在访问中，dfs(x) 尚未结束。
+2：节点 x 已经完全访问完毕，dfs(x) 已返回。
+
+⚠误区：不能只用两种状态表示节点「没有访问过」和「访问过」。例如上图，我们先 dfs(0)，再 dfs(1)，此时 1 的邻居 0 已经访问过，但这并不能表示此时就找到了环。
+"""
+
+
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        colours = [0] * numCourses
+        graph = [[] for _ in range(numCourses)]
+        for course, pre in prerequisites:
+            graph[course].append(pre)
+
+        def dfs(i):
+            if not graph[i]:
+                return True
+
+            if colours[i] == 2:
+                return True
+
+            if colours[i] == 1:
+                return False
+
+            colours[i] = 1
+            for pre in graph[i]:
+                if not dfs(pre):
+                    return False
+
+            colours[i] = 2
+            return True
+
+        for course in range(numCourses):
+            if not dfs(course):
+                return False
+        return True
+
 
 s = Solution()
 assert s.canFinish(3, [[0,1],[0,2],[1,2]])
