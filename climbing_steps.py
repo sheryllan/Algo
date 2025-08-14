@@ -21,7 +21,7 @@ def climbing_steps(n):
 # Fibonacci solution
 def climbing_steps_dp(n):
     f1 = f2 = 1
-    for i in range(2, n+1):
+    for i in range(2, n+1):  # for _ in range(n-1)
         temp = f2
         f2 += f1
         f1 = temp

@@ -5,7 +5,7 @@ def partition(nums: List[int], low: int, high: int) -> int:
     pivot = nums[high]
     i = low
 
-    for j in range(low, high + 1):
+    for j in range(low, high):
         if nums[j] < pivot:
             nums[i], nums[j] = nums[j], nums[i]
             i += 1
@@ -18,9 +18,9 @@ def partition(nums: List[int], low: int, high: int) -> int:
 def find_largest_k_elements(nums: List[int], k):
     nums_unique = list(set(nums))
     n = len(nums_unique)
-    i_intended = n - k
-    if i_intended <= 0:
+    if n <= k:
         return nums
+    i_intended = n - k
 
     i_pivot = None
     low, high = 0, n - 1
@@ -36,11 +36,37 @@ def find_largest_k_elements(nums: List[int], k):
     return [x for x in nums if x >= nums_unique[i_pivot]]
 
 
+def find_smallest_k_elements(nums: List[int], k):
+    nums_unique = list(set(nums))
+    n = len(nums_unique)
+    if n <= k:
+        return nums
+    i_intended = k - 1
+
+    i_pivot = None
+    low, high = 0, n - 1
+
+    while i_pivot != i_intended:
+        i_pivot = partition(nums_unique, low, high)
+        if i_pivot < i_intended:
+            low = i_pivot + 1
+
+        elif i_pivot > i_intended:
+            high = i_pivot - 1
+
+    return [x for x in nums if x <= nums_unique[i_pivot]]
+
 
 print(find_largest_k_elements([0, 99, 5, 14, 37, 58, 22, 96], 3))
 print(find_largest_k_elements([4, 2], 2))
 print(find_largest_k_elements([5, 9, 7, 3, 3, 3, 5], 5))
 print(find_largest_k_elements([5, 9, 7, 2, 3, 3, 5], 4))
+
+
+print(find_smallest_k_elements([0, 99, 5, 14, 37, 58, 22, 96], 3))
+print(find_smallest_k_elements([4, 2], 2))
+print(find_smallest_k_elements([5, 9, 7, 3, 3, 3, 5], 5))
+print(find_smallest_k_elements([5, 9, 7, 2, 3, 3, 5], 4))
 
 
 

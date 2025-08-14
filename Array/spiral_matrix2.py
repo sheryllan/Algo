@@ -67,6 +67,44 @@ class Solution:
 
 
 
+from typing import List
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        matrix = [[0] * n for _ in range(n)]
+
+        top, bottom = 0, n - 1
+        left, right = 0, n - 1
+        x = 1
+        while top < bottom and left < right:
+            i = top
+            for j in range(left, right):
+                matrix[i][j] = x
+                x += 1
+
+            j = right
+            for i in range(top, bottom):
+                matrix[i][j] = x
+                x += 1
+
+            i = bottom
+            for j in range(right, left, -1):
+                matrix[i][j] = x
+                x += 1
+
+            j = left
+            for i in range(bottom, top, -1):
+                matrix[i][j] = x
+                x += 1
+
+            top += 1
+            bottom -= 1
+            left += 1
+            right -= 1
+
+        if top == bottom and left == right:
+            matrix[top][left] = x
+
+        return matrix
 
 
 solution = Solution()

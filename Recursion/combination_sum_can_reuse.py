@@ -35,6 +35,7 @@ All elements of candidates are distinct.
 from typing import List
 
 
+# recursion using choose/not choose
 # candidates are positive is essential to this problem, negative number won't end the recursion
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
@@ -49,18 +50,36 @@ class Solution:
                 if s == target:
                     ans.append(combi.copy())
                 return
-            dfs(i + 1, combi, s)
+            dfs(i + 1, combi, s)  # do not choose the i-th candidate
 
             combi.append(candidates[i])
             s += candidates[i]
-            if s >= target:
-                if s == target:
-                    ans.append(combi.copy())
-            else:
-                dfs(i, combi, s)
+            dfs(i, combi, s)  # choose the i-th candidate
             combi.pop()
 
         dfs(0, [], 0)
+        return ans
+
+
+# recursion using loop
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        ans = []
+        n = len(candidates)
+
+        def dfs(i, s, path):
+            if s > target:
+                return
+            if s == target:
+                ans.append(path.copy())
+                return
+
+            for j in range(i, n):
+                path.append(candidates[j])
+                dfs(j, s + candidates[j], path)
+                path.pop()
+
+        dfs(0, 0, [])
         return ans
 
 
