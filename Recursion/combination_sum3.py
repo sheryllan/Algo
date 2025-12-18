@@ -55,8 +55,32 @@ class Solution:
         dfs(1, 0)
         return ans
 
+    # def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+    #     combi = []
+    #     ans = []
+    #
+    #     def dfs(i, s):
+    #         if len(combi) == k and s == n:
+    #             ans.append(combi.copy())
+    #             return
+    #
+    #         elif len(combi) == k or s == n:
+    #             return
+    #
+    #         if i > 9:
+    #             return
+    #
+    #         dfs(i + 1, s)
+    #         combi.append(i)
+    #         dfs(i + 1, s + i)
+    #         combi.pop()
+    #
+    #     dfs(1, 0)
+    #     return ans
+
 
 s = Solution()
 assert s.combinationSum3(3, 7) == [[1,2,4]]
+# print(s.combinationSum3(3, 9))
 assert s.combinationSum3(3, 9) == [[1,2,6],[1,3,5],[2,3,4]]
 assert s.combinationSum3(4, 1) == []

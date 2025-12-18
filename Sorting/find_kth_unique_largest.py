@@ -69,7 +69,6 @@ print(find_smallest_k_elements([5, 9, 7, 3, 3, 3, 5], 5))
 print(find_smallest_k_elements([5, 9, 7, 2, 3, 3, 5], 4))
 
 
-
 """
 Explanation of time complexity:
 

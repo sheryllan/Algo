@@ -230,7 +230,7 @@ assert s.maxProfit(2, [3,2,6,5,0,3]) == 7
 assert s.maxProfit(1, [3,2,6,5,0,3]) == 4
 
 
-# DP solution uising memoization, O(n * n * k)
+# DP solution using memoization, O(n * n * k)
 def maxProfit(k: int, prices: [int]):
     if not prices or k == 0:
             return 0
@@ -299,6 +299,130 @@ def maxProfit(k: int, prices: [int]):
 #     return r
 
 
+from math import inf
+
+#f[i+1][j][0] = max(f[i][j][0], f[i][j-1][1] + price)
+#f[i+1][j][1] = max(f[[i][j][1], f[i][j][0] - price)
+#f[0][0][0] = -inf
+#f[0][j][1] = -inf
+#f[0][j][0] = 0, j>=1
+def maxProfit(k: int, prices: [int]):
+    # f1 = [[0, -inf] for _ in range(k + 2)]
+    # f2 = [[0, -inf] for _ in range(k + 2)]
+    # f1[0][0] = -inf
+    #
+    # for price in prices:
+    #     for j in range(1, k+2):
+    #         f2[j][0] = max(f1[j][0], f1[j-1][1] + price)
+    #         f2[j][1] = max(f1[j][1], f1[j][0] - price)
+    #
+    #     f1, f2 = f2, f1
+    #
+    # return f1[k+1][0]
+
+    f = [[0, -inf] for _ in range(k + 2)]
+    f[0][0] = -inf
+    for price in prices:
+        for j in range(k+1, 0, -1):
+            f[j][1] = max(f[j][1], f[j][0] - price)
+            f[j][0] = max(f[j][0], f[j-1][1] + price)
+
+    return f[k+1][0]
+
+"""
+Approach
+I'll use dynamic programming with the following states:
+
+buy[i][j]: Maximum profit after at most i transactions with stock in hand on day j
+sell[i][j]: Maximum profit after at most i transactions with no stock in hand on day j
+
+For each transaction count and each day, we have two choices:
+
+Buy state: Either we already held stock, or we just bought (transitioning from sell state)
+Sell state: Either we already had no stock, or we just sold (transitioning from buy state)
+"""
+def maxProfit(k, prices):
+    """
+    Find maximum profit with at most k transactions.
+
+    Args:
+        k: Maximum number of transactions allowed
+        prices: List of stock prices where prices[i] is price on day i
+
+    Returns:
+        Maximum profit possible
+    """
+    if not prices or k == 0:
+        return 0
+
+    n = len(prices)
+
+    # If k >= n/2, we can do unlimited transactions
+    # (since we need at least 2 days per transaction)
+    if k >= n // 2:
+        return maxProfitUnlimited(prices)
+
+    # DP arrays:
+    # buy[i] = max profit after at most i transactions with stock in hand
+    # sell[i] = max profit after at most i transactions with no stock
+    buy = [-prices[0]] * (k + 1)
+    sell = [0] * (k + 1)
+
+    for i in range(1, n):
+        # Process in reverse to avoid using updated values
+        for j in range(k, 0, -1):
+            # Sell: either already had no stock, or sell today
+            sell[j] = max(sell[j], buy[j] + prices[i])
+            # Buy: either already had stock, or buy today
+            buy[j] = max(buy[j], sell[j - 1] - prices[i])
+
+    return sell[k]
+
+
+def maxProfitUnlimited(prices):
+    """
+    Helper function for unlimited transactions case.
+    Simply sum all positive price differences.
+    """
+    profit = 0
+    for i in range(1, len(prices)):
+        if prices[i] > prices[i-1]:
+            profit += prices[i] - prices[i-1]
+    return profit
+
+
+
+"""
+Categories of Edge Cases
+1. Boundary Conditions:
+
+Empty array
+Single element (can't complete a transaction)
+k = 0 (no transactions allowed)
+
+2. K-value Edge Cases:
+
+k = 1 (simplest case)
+k larger than possible transactions (triggers unlimited mode)
+k exactly equals n/2 (boundary of optimization)
+
+3. Price Pattern Edge Cases:
+
+All prices identical (no profit possible)
+Monotonically decreasing (no profit)
+Monotonically increasing (best as single transaction)
+Alternating up/down (tests multiple transaction logic)
+
+4. Special Values:
+
+Prices containing 0
+Multiple clear profit opportunities
+
+5. Algorithm Stress Tests:
+
+Two separate peaks (tests transaction independence)
+Complex patterns requiring careful transaction selection
+"""
 
 assert maxProfit(0, [1, 3]) == 0
 assert maxProfit(2, []) == 0
@@ -311,7 +435,5 @@ assert maxProfit(1, [3,2,6,5,0,3]) == 4
 assert maxProfit(2, [1,2,4,2,5,7,2,4,9,0]) == 13
 assert maxProfit(3, [1,2,4,2,5,7,2,4,9,0]) == 15
 assert maxProfit(2, [5, 4, 3, 1]) == 0
-
-
-
+assert maxProfit(8, [4, 7, 8, 2, 5, 3, 9, 6, 4, 7, 8]) == 17
 

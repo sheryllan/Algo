@@ -23,7 +23,42 @@ def merge(interval_list: List[List[int]], new_interval: List[int]) -> List[List[
     return merged
 
 
+def merge(interval_list: List[List[int]], new_interval: List[int]) -> List[List[int]]:
+    left_new, right_new = new_interval
 
+    if (not interval_list) or interval_list[0][0] > right_new:
+        return [new_interval, *interval_list]
+
+    leftmost = min(interval_list[0][0], left_new)
+    rightmost = interval_list[0][1]
+
+    merged = []
+    for left, right in interval_list:
+        # always remember leftmost and rightmost is from last iteration, so not touched here
+        if left_new <= right and right_new >= left:
+            left = min(left, left_new)
+            right = max(right, right_new)
+        elif left_new > rightmost and right_new < left:
+            merged.append([leftmost, rightmost])
+            leftmost = left_new
+            rightmost = right_new
+
+        if left > rightmost:
+            merged.append([leftmost, rightmost])
+            leftmost = left
+
+        rightmost = max(rightmost, right)
+
+    merged.append([leftmost, rightmost])
+    if left_new > rightmost:
+        merged.append(new_interval)
+
+    return merged
+
+
+
+assert merge([[1,4], [5,6], [8,9]], [3, 6]) == [[1,6], [8,9]]
+assert merge([[2,4], [5,7], [8,9]], [2, 6]) == [[2,7], [8,9]]
 assert merge([[2, 5], [6, 9], [10, 11]], [7, 8]) == [[2, 5], [6, 9], [10, 11]]
 assert merge([[2, 5], [6, 9], [10, 11]], [3, 7]) == [[2, 9], [10, 11]]
 assert merge([[2, 5], [6, 9], [10, 11]], [1, 12]) == [[1, 12]]

@@ -37,11 +37,9 @@ def lengthOfLongestSubstringKDistinct(s: str, k: int) -> int:
         char = s[end]
         if char not in char_index and len(char_index) == k:
             ans = max(ans, end - start)
-            start_char = s[start]
-            while char_index[start_char] > start:
+            while char_index[s[start]] > start:
                 start += 1
-                start_char = s[start]
-            char_index.pop(start_char)
+            char_index.pop(s[start])
             start += 1
 
         char_index[char] = end
@@ -49,6 +47,34 @@ def lengthOfLongestSubstringKDistinct(s: str, k: int) -> int:
 
     ans = max(ans, end - start) if len(char_index) == k else ans
     return ans
+
+
+def lengthOfLongestSubstringKDistinct(s: str, k: int) -> int:
+    start, end = 0, 0
+    ans = -1
+    char_index = {}
+    while start <= end < len(s):
+        char_index[s[end]] = end
+        # increasing the size of dict
+        while end < len(s) and len(char_index) <= k:
+            end += 1  # end pointing to the next char outside k-sized window
+            if end < len(s):
+                char_index[s[end]] = end
+
+        if len(char_index) >= k:
+            ans = max(ans, end - start)
+
+        # decreasing the size of dict
+        while start < end and start < char_index[s[start]]:
+            start += 1
+
+        char_index.pop(s[start])
+        start += 1
+
+    ans = max(ans, end - start) if len(char_index) == k else ans
+    return ans
+
+
 
 
 assert lengthOfLongestSubstringKDistinct('aabbcc', 2) == 4
