@@ -25,6 +25,17 @@ def total_num_handshakes(delegations: list):
 print(total_num_handshakes(['ababaa', 'ghigh']))
 
 
+def total_num_handshakes(delegations: list):
+    handshakes = []
+    for delegation in delegations:
+        n = len(delegation)
+        count = 0
+        # starting from the last day
+        for i in range(n - 1, -1, -1):
+            brurada_delegates = delegation[i:]
+            n_brurada = len(brurada_delegates)
+            if
+
 
 # Solution 2: recursive dp
 def find_similar_substrings(s):

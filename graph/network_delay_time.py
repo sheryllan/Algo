@@ -1,5 +1,3 @@
-
-
 from typing import List
 from math import inf
 class Solution:
@@ -44,6 +42,34 @@ class Solution:
         dfs(k - 1, 0)
         return max(visited.values()) if len(visited) == n else -1
 
+class Solution:
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        graph = [[] for _ in range(n)]
+        min_times = [-1 for _ in range(n)]
+        min_times[k - 1] = 0
+
+        for u, v, w in times:
+            graph[v - 1].append((u - 1, w))
+
+        def dfs(target):
+            if min_times[target] != -1:
+                return min_times[target]
+
+            min_time = inf
+            for source, time in graph[target]:
+                source_min_time = min_times[source] if min_times[source] != -1 else dfs(source)
+                min_time = min(min_time, time + source_min_time)
+
+            min_times[target] = min_time
+            return min_time
+
+        total_time = 0
+        for i in range(n):
+            if min_times[i] == -1:  # not visited yet
+                total_time = max(total_time, dfs(i))
+
+        return total_time
+
 
 s = Solution()
 print(s.networkDelayTime([
@@ -54,4 +80,6 @@ print(s.networkDelayTime([
 ], 5, 5))
 print(s.networkDelayTime([[2, 1, 1], [2, 3, 1], [3, 4, 1]], 4, 2))  # expect 2
 print(s.networkDelayTime([[2, 1, 3], [2, 3, 1], [3, 4, 1], [3, 1, 1]], 4, 2))  # expect 2
+
+print(s.networkDelayTime([[1,2,4],[2,3,1],[2,4,1],[4,5,1],[5,2,2],[3,5,2]], 5, 1)) # test a loop
 

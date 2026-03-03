@@ -36,3 +36,7 @@ print(m2)
 
 m3 = solution.merge([[3, 5], [5, 7], [1, 6]])
 print(m3)
+
+
+m4 = solution.merge([[3, 8], [5, 7], [1, 6]])
+print(m4)

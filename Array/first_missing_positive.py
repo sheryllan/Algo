@@ -58,6 +58,10 @@ class Solution:
             so we only have to care about those elements in this range and remove the rest.
         2. we can use the array index as the hash to restore the frequency of each number within
              the range [1,...,l+1]
+
+        After removing all the numbers greater than or equal to n, all the numbers remaining are smaller than n.
+        If any number i appears, we add n to nums[i] which makes nums[i]>=n.
+        Therefore, if nums[i]<n, it means i never appears in the array and we should return i.
         """
         nums.append(0)
         n = len(nums)
