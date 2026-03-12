@@ -100,3 +100,18 @@ class Solution:
             right += 1
 
         return min_len if min_len != float('inf') else 0
+
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        start = 0
+        n = len(nums)
+        sub_sum = 0
+        found = n + 1
+        for end in range(n):
+            sub_sum += nums[end]
+
+            while start < n and sub_sum >= target:
+                found = min(found, end - start + 1)
+                sub_sum -= nums[start]
+                start += 1
+
+        return found % (n + 1)

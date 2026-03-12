@@ -1,3 +1,26 @@
+"""
+Given a string s, partition s such that every substring of the partition is a palindrome.
+Return all possible palindrome partitioning of s.
+
+
+
+Example 1:
+
+Input: s = "aab"
+Output: [["a","a","b"],["aa","b"]]
+Example 2:
+
+Input: s = "a"
+Output: [["a"]]
+
+
+Constraints:
+
+1 <= s.length <= 16
+s contains only lowercase English letters.
+"""
+
+
 
 def is_palindrome(s, start, end):
     sub_s = s[start: end]
@@ -44,24 +67,21 @@ def find_palindrome_subarrays2(s: str):
     sub_indices = [0]
 
     def split(i: int):
-        if i == n:  # evaluation of palindrome not needed here because if the last substring wouldn't reach n if it is not palindrome
+        # evaluation of palindrome not needed here because if the last substring wouldn't reach n+1 if it is not palindrome
+        if i == n + 1:
             sub_strings = []
             start = 0
             for end in sub_indices[1:]:
                 sub_strings.append(s[start: end])
-                start = end
-            sub_strings.append(s[start:])
+                start = end  # last end must be n
             ans.append(sub_strings)
             return
 
         for j in range(i, n + 1):
             if is_palindrome(s, sub_indices[-1], j):  # add only palindrome indices
-                if j < n:
-                    sub_indices.append(j)
-                    split(j + 1)
-                    sub_indices.pop()
-                else:
-                    split(j)
+                sub_indices.append(j)
+                split(j + 1)
+                sub_indices.pop()
 
     split(1)
     return ans

@@ -33,8 +33,6 @@ def bfs_find_sets(graph: dict, n):
             visited.add(v)
             set_v.add(v)
             for connected_v in graph[v]:
-                if connected_v in visited:
-                    continue
                 q.put(connected_v)
 
         node_sets.append(set_v)

@@ -43,10 +43,30 @@ class Solution:
             cnt_s[s[i]] -= 1
             if cnt_s[s[i]] == 0:
                 cnt_s.pop(s[i])
-            cnt_s[s[i + k]] -= cnt_s.get(s[i + k], 0) + 1
+            cnt_s[s[i + k]] = cnt_s.get(s[i + k], 0) + 1
 
         if cnt_s == cnt_p:
             ans.append(len(s) - k)
         return ans
 
-print(Solution().findAnagrams("cbaebabacd", "abab"))
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        ans = []
+        k = len(p)
+        cnt_s = Counter(s[:k-1])
+        cnt_p = Counter(p)
+
+        for i in range(len(s) - k + 1):
+            cnt_s[s[i + k - 1]] = cnt_s.get(s[i + k - 1], 0) + 1
+            if cnt_s == cnt_p:
+                ans.append(i)
+
+            cnt_s[s[i]] -= 1
+            if cnt_s[s[i]] == 0:
+                cnt_s.pop(s[i])
+
+        return ans
+
+
+s = Solution()
+assert s.findAnagrams("cbaebabacd", "abc") == [0, 6]
+assert s.findAnagrams("cbaebabacd", "abab") == [4]

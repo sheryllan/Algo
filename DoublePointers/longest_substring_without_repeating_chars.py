@@ -29,10 +29,10 @@ s consists of English letters, digits, symbols and spaces.
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        start, end = 0, 0
+        start = 0
         char_index = {}
         ans = 0
-        while start <= end < len(s):
+        for end in range(len(s)):
             char = s[end]
             if char in char_index:
                 idx = char_index[char]
@@ -41,14 +41,14 @@ class Solution:
                     start = idx + 1
 
             char_index[char] = end
-            end += 1
-        return max(ans, end - start)
+
+        return max(ans, len(s) - start)
 
 
 solution = Solution()
-print(solution.lengthOfLongestSubstring("abcabcbb"))
-print(solution.lengthOfLongestSubstring("bbbbb"))
-print(solution.lengthOfLongestSubstring("pwwkew"))
-print(solution.lengthOfLongestSubstring("abbjlacjlke"))
-print(solution.lengthOfLongestSubstring("abba"))
-print(solution.lengthOfLongestSubstring(""))
+assert solution.lengthOfLongestSubstring("abcabcbb") == 3
+assert solution.lengthOfLongestSubstring("bbbbb") == 1
+assert solution.lengthOfLongestSubstring("pwwkew") == 3
+assert solution.lengthOfLongestSubstring("abbjlacjlke") == 6
+assert solution.lengthOfLongestSubstring("abba") == 2
+assert solution.lengthOfLongestSubstring("") == 0
