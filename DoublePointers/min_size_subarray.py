@@ -115,3 +115,6 @@ class Solution:
                 start += 1
 
         return found % (n + 1)
+
+
+# please refer to solution with O(nlog(n)) complexity
